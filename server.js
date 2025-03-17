@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const fetch = require("node-fetch");
 const saltRounds = 10;
 const User = require("./models/User");
 const Outfit = require("./models/Outfit");
