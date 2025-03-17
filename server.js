@@ -11,21 +11,15 @@ const Outfit = require("./models/Outfit");
 const Comment = require("./models/Comment");
 
 const app = express();
-const PORT = process.env.PORT;
-
+const PORT = process.env.PORT || 4000;
 const dbURL = process.env.MONGODB_URL;
 
 // Middleware CORS
 app.use(
     cors({
-        origin: (origin, callback) => {
-            const allowedOrigins = ["http://127.0.0.1:5500"];
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error("Not allowed by CORS"));
-            }
-        },
+        origin: "*", // Mengizinkan akses dari semua domain
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        credentials: true,
     })
 );
 
