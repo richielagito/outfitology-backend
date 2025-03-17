@@ -401,9 +401,6 @@ app.delete("/outfits", async (req, res) => {
 });
 
 // Jalankan server
-
-const fetch = require("node-fetch"); // Pastikan sudah install: npm install node-fetch
-
 app.get("/api/unsplash", async (req, res) => {
     try {
         const query = req.query.query || "fashion, streetwear, outfit, casual outfit";
