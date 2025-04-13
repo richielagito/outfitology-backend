@@ -9,9 +9,23 @@ const User = require("./models/User");
 const Outfit = require("./models/Outfit");
 const Comment = require("./models/Comment");
 
+const multer = require("multer");
+const cloudinary = require("./cloudinary");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 const dbURL = process.env.MONGODB_URL;
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "outfitology",
+        allowed_formats: ["jpg", "jpeg", "png"],
+    },
+});
+
+const upload = multer({ storage: storage });
 
 // Middleware CORS
 app.use(
@@ -264,18 +278,19 @@ app.get("/outfits/user/:userId", async (req, res) => {
 });
 
 // Create outfit
-app.post("/outfits", async (req, res) => {
+app.post("/outfits", upload.single("image"), async (req, res) => {
     try {
-        const { name, description, image, userId } = req.body;
+        const { name, description, userId } = req.body;
+        const imageUrl = req.file?.path; // URL dari Cloudinary
 
-        if (!name || !description || !image || !userId) {
+        if (!name || !description || !userId || !imageUrl) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
         const newOutfit = new Outfit({
             name,
             description,
-            image,
+            image: imageUrl,
             user: userId,
         });
 
@@ -414,5 +429,5 @@ app.get("/api/unsplash", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server running at https://outfitology-backend-production.up.railway.app:${PORT}`);
 });
