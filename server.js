@@ -369,13 +369,13 @@ app.get("/outfits/:outfitId/likes", async (req, res) => {
 // Edit outfit
 app.put("/outfits/:id", async (req, res) => {
     try {
-        const { name, description, image } = req.body;
+        const { name, description } = req.body;
 
-        if (!name || !description || !image) {
+        if (!name || !description) {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        const updatedOutfit = await Outfit.findByIdAndUpdate(req.params.id, { name, description, image }, { new: true });
+        const updatedOutfit = await Outfit.findByIdAndUpdate(req.params.id, { name, description }, { new: true });
 
         if (!updatedOutfit) {
             return res.status(404).json({ message: "Outfit not found" });
