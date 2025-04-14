@@ -9,23 +9,14 @@ const User = require("./models/User");
 const Outfit = require("./models/Outfit");
 const Comment = require("./models/Comment");
 
+const fs = require("fs");
 const multer = require("multer");
 const cloudinary = require("./cloudinary");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const upload = multer({ dest: "uploads/" });
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 const dbURL = process.env.MONGODB_URL;
-
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: "outfitology",
-        allowed_formats: ["jpg", "jpeg", "png"],
-    },
-});
-
-const upload = multer({ storage: storage });
 
 // Middleware CORS
 app.use(
@@ -281,22 +272,28 @@ app.get("/outfits/user/:userId", async (req, res) => {
 app.post("/outfits", upload.single("image"), async (req, res) => {
     try {
         const { name, description, userId } = req.body;
-        const imageUrl = req.file?.path; // URL dari Cloudinary
+        const filePath = req.file.path;
 
-        if (!name || !description || !userId || !imageUrl) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
+        // Upload ke Cloudinary
+        const result = await cloudinary.uploader.upload(filePath, {
+            folder: "outfitology",
+        });
 
+        // Hapus file lokal
+        fs.unlinkSync(filePath);
+
+        // Simpan ke MongoDB
         const newOutfit = new Outfit({
             name,
             description,
-            image: imageUrl,
+            image: result.secure_url,
             user: userId,
         });
 
         await newOutfit.save();
         res.status(201).json({ message: "Outfit created successfully!", outfit: newOutfit });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ message: "Error creating outfit", error: err.message });
     }
 });
