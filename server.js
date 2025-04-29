@@ -428,6 +428,21 @@ app.get("/api/unsplash", async (req, res) => {
     }
 });
 
+app.get("/api/unsplash/slides", async (req, res) => {
+    try {
+        const query = req.query.query || "ootd";
+        const count = parseInt(req.query.count) || 3;
+
+        const response = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=${count}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`);
+        const data = await response.json();
+
+        res.json(data.results);
+    } catch (error) {
+        console.error("Error fetching images from Unsplash:", error);
+        res.status(500).json({ message: "Failed to fetch images from Unsplash" });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`);
 });
