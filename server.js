@@ -415,7 +415,7 @@ app.delete("/outfits", async (req, res) => {
 // Jalankan server
 app.get("/api/unsplash", async (req, res) => {
     try {
-        const count = req.query.count || 30;
+        const count = parseInt(req.query.count) || 30;
         const query = req.query.query || "fashion, streetwear, outfit, casual outfit";
         const response = await fetch(`https://api.unsplash.com/photos/random?count=${count}&query=${encodeURIComponent(query)}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`);
         const data = await response.json();
