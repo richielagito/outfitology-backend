@@ -415,8 +415,9 @@ app.delete("/outfits", async (req, res) => {
 // Jalankan server
 app.get("/api/unsplash", async (req, res) => {
     try {
+        const count = req.query.count || 30;
         const query = req.query.query || "fashion, streetwear, outfit, casual outfit";
-        const response = await fetch(`https://api.unsplash.com/photos/random?count=30&query=${query}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`);
+        const response = await fetch(`https://api.unsplash.com/photos/random?count=${count}&query=${encodeURIComponent(query)}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`);
         const data = await response.json();
         res.json(data);
     } catch (error) {
@@ -426,5 +427,5 @@ app.get("/api/unsplash", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`Server running at https://outfitology-backend-production.up.railway.app:${PORT}`);
+    console.log(`Server running at ${PORT}`);
 });
