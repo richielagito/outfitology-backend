@@ -416,8 +416,6 @@ app.delete("/outfits", async (req, res) => {
 app.get("/api/unsplash", async (req, res) => {
     try {
         const count = parseInt(req.query.count, 10) || 30;
-        console.log("Query count:", req.query.count);
-        console.log("Parsed count:", count);
         const query = req.query.query || "fashion, streetwear, outfit, casual outfit";
         const response = await fetch(`https://api.unsplash.com/photos/random?count=${count}&query=${query}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`);
         const data = await response.json();
@@ -431,13 +429,13 @@ app.get("/api/unsplash", async (req, res) => {
 app.get("/api/unsplash/slides", async (req, res) => {
     try {
         const query = req.query.query || "ootd";
-        const count = parseInt(req.query.count) || 3;
+        const count = parseInt(req.query.count, 10) || 3;
         const orientation = req.query.orientation || "landscape";
 
         const response = await fetch(`https://api.unsplash.com/photos/random?query=${query}&count=${count}&orientation=${orientation}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`);
         const data = await response.json();
 
-        res.json(data.results);
+        res.json(data);
     } catch (error) {
         console.error("Error fetching images from Unsplash:", error);
         res.status(500).json({ message: "Failed to fetch images from Unsplash" });
