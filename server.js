@@ -434,7 +434,7 @@ app.get("/api/unsplash/slides", async (req, res) => {
         const count = parseInt(req.query.count) || 3;
         const orientation = req.query.orientation || "landscape";
 
-        const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(query)}&count=${count}&orientation=${orientation}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`);
+        const response = await fetch(`https://api.unsplash.com/photos/random?query=${query}&count=${count}&orientation=${orientation}&client_id=${process.env.UNSPLASH_ACCESS_KEY}`);
         const data = await response.json();
 
         res.json(data.results);
